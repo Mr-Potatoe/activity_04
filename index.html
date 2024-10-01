@@ -1,143 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity_04</title>
-</head>
-<body>
-		<h2>Computer Retailer - Product Management</h2>
-		<input type="text" id="name" placeholder="Enter product name" required>
-		<input type="number" id="price" placeholder="Enter product price">
-		<select id="category">
-			<option value="">Select category</option>
-			<option>Laptop</option>
-			<option>Desktop</option>
-			<option>Accessories</option>
-		</select>
-		<button onclick="app.save()">Submit</button>
-
-		<h3>Search Products</h3>
-		<input type="text" id="search" placeholder="Search by name or category" oninput="app.search()">
-
-		<hr>
-		<table width='100%' border=1>
-			<thead>
-				<tr>
-					<td>Product Name</td>
-					<td>Price</td>
-					<td>Category</td>
-					<td>Action</td>
-				</tr>
-			</thead>
-			<tbody id="tbdata"></tbody>
-		</table>
-
-        <!-- <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script> -->
-
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert/dist/sweetalert.min.js"></script>
-
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Activity_04</title>
+        </head>
+        <body>
+            <h2>Computer Retailer - Product Management</h2>
         
+            <!-- Input fields for adding a new product -->
+            <input type="text" id="name" placeholder="Enter product name">
+            <input type="number" id="quantity" placeholder="Enter quantity">
+            <input type="number" id="price" placeholder="Enter product price">
+
+            <select id="category">
+                <option value="">Select category</option>
+                <option>Laptop</option>
+                <option>Desktop</option>
+                <option>Accessories</option>
+            </select>
+            <button onclick="app.save()">Submit</button> <!-- Button to save the product -->
         
-        <script>
-            class ProductApp {
-                constructor() {
-                    this.data = [];  // Store products
-                    this.id = '';  // To track edit mode
-                }
+            <h3>Search Products</h3>
+            <!-- Input field for searching products by name or category -->
+            <input type="text" id="search" placeholder="Search by name or category" oninput="app.search()">
         
-                save() {
-                    var name = document.getElementById('name').value.trim();
-                    var price = document.getElementById('price').value;
-                    var category = document.getElementById('category').value;
-                
-                    // Validation to prevent empty inputs
-                    if (!name || !price || !category) {
-                        swal("Error", "All fields are required!", "error");
-                        return;
+            <hr>
+            <!-- Table to display the list of products -->
+            <table width='100%' border=1>
+                <thead>
+                    <tr>
+                        <td>Product Name</td>
+                        <td>Quantity</td>
+                        <td>Price</td>
+                        <td>Category</td>
+                        <td>Action</td>
+                    </tr>
+                </thead>
+                <tbody id="tbdata"></tbody> <!-- Table body where products will be displayed -->
+            </table>
+        
+            <!-- Include SweetAlert from CDN for notifications -->
+            <!-- <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script> -->
+
+              <script src="https://cdn.jsdelivr.net/npm/sweetalert/dist/sweetalert.min.js"></script>
+
+            <script>
+                // ProductApp class to manage products
+                class ProductApp {
+                    constructor() {
+                        this.data = [];  // Array to store products
+                        this.id = '';  // Variable to track the index of the product being edited
                     }
                 
-                    if (this.id === '') {
-                        // Add new product
-                        this.data.push([name, price, category]);
-                        swal("Success", "Product added successfully!", "success");
-                    } else {
-                        // Update existing product
-                        this.data[this.id][0] = name; // Update the name
-                        this.data[this.id][1] = price; // Update the price
-                        this.data[this.id][2] = category; // Update the category
-                        this.id = '';  // Clear id after update
-                        swal("Success", "Product updated successfully!", "success");
-                    }
-                
-                    this.view(); // Call view after adding or updating
-                    this.clear(); // Clear input fields
-                }
-                
-
-                view(dataToDisplay = this.data) {
-                    // Show products
-                    let datatable = '';
-                    for (let i = 0; i < dataToDisplay.length; i++) {
-                        datatable += `<tr>
-                            <td>${dataToDisplay[i][0]}</td>
-                            <td>₱ ${dataToDisplay[i][1]}</td>
-                            <td>${dataToDisplay[i][2]}</td>
-                            <td>
-                                <button onclick="app.edit(${i})">Edit</button>
-                                <button onclick="app.del(${i})">Delete</button>
-                            </td>
-                        </tr>`;
-                    }
-                    document.getElementById('tbdata').innerHTML = datatable;
-                }
-        
-                edit(i) {
-                    // Edit a product
-                    this.id = i;  // Set id to track the index of the product to edit
-                    document.getElementById('name').value = this.data[i][0];
-                    document.getElementById('price').value = this.data[i][1];
-                    document.getElementById('category').value = this.data[i][2];
-                }
-        
-                del(i) {
-                    // Delete a product with SweetAlert confirmation
-                    swal({
-                        title: "Are you sure?",
-                        text: "Once deleted, you will not be able to recover this product!",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    }).then((willDelete) => {
-                        if (willDelete) {
-                            this.data.splice(i, 1);
-                            this.view();
-                            swal("Deleted!", "Product has been deleted!", "success");
+                    // Method to save a new product or update an existing one
+                    save() {
+                        var name = document.getElementById('name').value.trim(); // Get product name
+                        var quantity = document.getElementById('quantity').value; // Get product quantity
+                        var price = document.getElementById('price').value; // Get product price
+                        var category = document.getElementById('category').value; // Get product category
+                        
+                        // Validation to prevent empty inputs
+                        if (!name || !price || !category) {
+                            swal("Error", "All fields are required!", "error"); // Show error if fields are empty
+                            return;
                         }
-                    });
+                        
+                        if (this.id === '') {
+                            // Add new product if not in edit mode
+                            this.data.push([name, quantity, price, category]); // Push product data to the array
+                            swal("Success", "Product added successfully!", "success"); // Show success message
+                        } else {
+                            // Update existing product if in edit mode
+                            this.data[this.id][0] = name; // Update the name
+                            this.data[this.id][1] = quantity; // Update the quantity
+                            this.data[this.id][1] = price; // Update the price
+                            this.data[this.id][2] = category; // Update the category
+                            this.id = '';  // Clear id after update
+                            swal("Success", "Product updated successfully!", "success"); // Show success message
+                        }
+                        
+                        this.view(); // Refresh the displayed product list
+                        this.clear(); // Clear input fields
+                    }
+                    
+                    // Method to display the products in the table
+                    view(dataToDisplay = this.data) {
+                        let datatable = ''; // Variable to hold the generated table rows
+                        for (let i = 0; i < dataToDisplay.length; i++) {
+                            datatable += `<tr>
+                                <td>${dataToDisplay[i][0]}</td>
+                                <td>${dataToDisplay[i][1]}</td>
+                                <td>₱ ${dataToDisplay[i][2]}</td>
+                                <td>${dataToDisplay[i][3]}</td>
+                                <td>
+                                    <button onclick="app.edit(${i})">Edit</button> <!-- Button to edit the product -->
+                                    <button onclick="app.del(${i})">Delete</button> <!-- Button to delete the product -->
+                                </td>
+                            </tr>`;
+                        }
+                        document.getElementById('tbdata').innerHTML = datatable; // Insert the generated rows into the table body
+                    }
+                
+                    // Method to set up the form for editing a product
+                    edit(i) {
+                        this.id = i;  // Set id to track the index of the product to edit
+                        document.getElementById('name').value = this.data[i][0]; // Populate name field
+                        document.getElementById('quantity').value = this.data[i][1]; // Populate quantity field
+                        document.getElementById('price').value = this.data[i][2]; // Populate price field
+                        document.getElementById('category').value = this.data[i][3]; // Populate category field
+                    }
+                
+                    // Method to delete a product with confirmation
+                    del(i) {
+                        swal({
+                            title: "Are you sure?",
+                            text: "Once deleted, you will not be able to recover this product!",
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true,
+                        }).then((willDelete) => {
+                            if (willDelete) {
+                                this.data.splice(i, 1); // Remove product from the array
+                                this.view(); // Refresh the displayed product list
+                                swal("Deleted!", "Product has been deleted!", "success"); // Show success message
+                            }
+                        });
+                    }
+                
+                    // Method to clear the input fields
+                    clear() {
+                        document.getElementById('name').value = ''; // Clear name field
+                        document.getElementById('quantity').value = ''; // Clear quantity field
+                        document.getElementById('price').value = ''; // Clear price field
+                        document.getElementById('category').value = ''; // Clear category field
+                        this.id = '';  // Clear the edit mode identifier
+                    }
+                
+                    // Method to search for products by name or category
+                    search() {
+                        const searchValue = document.getElementById('search').value.trim().toLowerCase(); // Get the search value
+                        const filteredData = this.data.filter(product => 
+                            product[0].toLowerCase().includes(searchValue) || // Check if name matches
+                            product[2].toLowerCase().includes(searchValue) // Check if category matches
+                        );
+                        this.view(filteredData); // Display filtered results
+                    }
                 }
-        
-                clear() {
-                    // Clear input fields
-                    document.getElementById('name').value = '';
-                    document.getElementById('price').value = '';
-                    document.getElementById('category').value = '';
-                    this.id = '';  // Clear the edit mode identifier
-                }
-        
-                search() {
-                    // Search for products by name or category
-                    const searchValue = document.getElementById('search').value.trim().toLowerCase();
-                    const filteredData = this.data.filter(product => 
-                        product[0].toLowerCase().includes(searchValue) || 
-                        product[2].toLowerCase().includes(searchValue)
-                    );
-                    this.view(filteredData);
-                }
-            }
-        
-            // Instantiate the ProductApp class
-            const app = new ProductApp();
-        </script>
-	</body>
+                
+                // Instantiate the ProductApp class
+                const app = new ProductApp();
+            </script>
+        </body>
 </html>
+        

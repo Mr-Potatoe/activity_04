@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "activity_04": "file:",
     "sweetalert": "^2.1.2"
   }
 }

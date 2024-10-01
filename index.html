@@ -61,7 +61,7 @@
                         var category = document.getElementById('category').value; // Get product category
                         
                         // Validation to prevent empty inputs
-                        if (!name || !price || !category) {
+                        if (!name || !quantity || !price || !category ) {
                             swal("Error", "All fields are required!", "error"); // Show error if fields are empty
                             return;
                         }
@@ -74,8 +74,8 @@
                             // Update existing product if in edit mode
                             this.data[this.id][0] = name; // Update the name
                             this.data[this.id][1] = quantity; // Update the quantity
-                            this.data[this.id][1] = price; // Update the price
-                            this.data[this.id][2] = category; // Update the category
+                            this.data[this.id][2] = price; // Update the price
+                            this.data[this.id][3] = category; // Update the category
                             this.id = '';  // Clear id after update
                             swal("Success", "Product updated successfully!", "success"); // Show success message
                         }

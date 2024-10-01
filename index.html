@@ -142,7 +142,9 @@
                         const searchValue = document.getElementById('search').value.trim().toLowerCase(); // Get the search value
                         const filteredData = this.data.filter(product => 
                             product[0].toLowerCase().includes(searchValue) || // Check if name matches
-                            product[2].toLowerCase().includes(searchValue) // Check if category matches
+                            product[1].toLowerCase().includes(searchValue) || 
+                            product[2].toLowerCase().includes(searchValue) ||
+                            product[3].toLowerCase().includes(searchValue) // Check if category matches
                         );
                         this.view(filteredData); // Display filtered results
                     }
